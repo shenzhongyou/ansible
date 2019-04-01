@@ -594,8 +594,10 @@ class Ec2Inventory(object):
         aws_secret_key = self.get_option(aws_creds, source_profile, 'aws_secret_access_key')
         session_name   = "role_session_name_" + self.boto_profile
 
+        # Prompt for MFA time-based one-time password (TOTP)
+        mfa_TOTP = raw_input("Enter the MFA code: ")
         sts_conn = sts.STSConnection(aws_access_key, aws_secret_key)
-        mfa_TOTP = raw_input("Enter the FMA code: ")
+
         assume_role = sts_conn.assume_role(role_arn=arn, role_session_name=session_name, mfa_serial_number=mfa, mfa_token=mfa_TOTP)
         connect_args['aws_access_key_id']     = assume_role.credentials.access_key
         connect_args['aws_secret_access_key'] = assume_role.credentials.secret_key
